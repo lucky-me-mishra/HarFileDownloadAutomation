@@ -7,6 +7,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 
 /*import org.browsermob.core.har.Har;
@@ -23,21 +26,38 @@ import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import net.lightbody.bmp.proxy.CaptureType;
 
+
+
 public class PerfTest {
+	
+	/*public static void clearHistory(WebDriver driver) throws InterruptedException{
+		Robot robot=null;
+		try {
+			robot = new Robot();
+			Thread.sleep(3000);
+			  driver.manage().deleteAllCookies();
+			Thread.sleep(5000);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			
+			driver.quit();
+		}
+	}
 
 	public static void main(String[] args) throws Exception {
 
 		String strFilePath = "D:/test.har";
 		
 		System.setProperty("webdriver.chrome.driver", "D:/Main_Folder/code/chromedriver_win32/chromedriver.exe");
-		/*
+		
 		 * no need of Proxyserver, it should be done by the BrowserMobProxy in order to work for ssl based sites and head less chrome browser
 		// start the proxy
 		ProxyServer server = new ProxyServer(4444);
 		server.start();
 		// captures the moouse movements and navigations
 		server.setCaptureHeaders(true);
-		server.setCaptureContent(true);*/
+		server.setCaptureContent(true);
 
 		BrowserMobProxy proxy1 = new BrowserMobProxyServer();
 		proxy1.setTrustAllServers(true);
@@ -67,6 +87,7 @@ public class PerfTest {
 
 		driver.get("https://lex.infosysapps.com/login");
 		Thread.sleep(3000);
+		clearHistory(driver);
 		driver.get("https://www.infosys.com/");
 		
 		Thread.sleep(3000);
@@ -93,5 +114,5 @@ public class PerfTest {
 		}
 
 	}
-
+*/
 }

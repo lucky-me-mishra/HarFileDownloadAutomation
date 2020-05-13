@@ -20,7 +20,7 @@ import net.lightbody.bmp.client.ClientUtil;
 import net.lightbody.bmp.proxy.CaptureType;
 public class NewTest {
 
-	
+	/*
 	 ProxyServer server;
 	 String strFilePath = "D:/test.har";
 	public NewTest() {
@@ -105,4 +105,4 @@ public class NewTest {
 		server.stop();
     }
 
-}
+*/}

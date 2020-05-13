@@ -1,11 +1,16 @@
 package Example;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,7 +25,9 @@ import net.lightbody.bmp.client.ClientUtil;
 import net.lightbody.bmp.proxy.CaptureType;
 
 public class Test {
-
+	
+	
+	static ReadProperties readProperties = new ReadProperties();
 	private static WebDriver driver = null;
 	BrowserMobProxy proxy1 = null;
 	private static final String CHROME_PATH = "D:/Main_Folder/code/chromedriver_win32/chromedriver.exe";
@@ -28,12 +35,21 @@ public class Test {
 	private Test() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public static String readDriver(){
+		String fileName = "driver/chromedriver.exe";
+        ClassLoader classLoader = new Test().getClass().getClassLoader();
+ 
+        File file = new File(classLoader.getResource(fileName).getFile());
+        System.out.print("================"+file.getAbsolutePath());
+        return file.getAbsolutePath();
+	}
 
 	public static WebDriver getWebDriver(DesiredCapabilities capabilities) throws CloneNotSupportedException {
 		if (driver == null) {
 			synchronized (Test.class) {
 				if (driver == null) {
-					System.setProperty("webdriver.chrome.driver", CHROME_PATH);
+					System.setProperty("webdriver.chrome.driver", readDriver());
 					driver = new ChromeDriver(capabilities);
 				}
 			}
@@ -55,22 +71,26 @@ public class Test {
 		Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy1);
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--ignore-certificate-errors");
+		//options.addArguments("--headless");
 
 		// configure it as a desired capability
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
 		capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		//capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 		
 		proxy1.newHar("Infosys.com");
 		WebDriver driver = Test.getWebDriver(capabilities);
 		proxy1.enableHarCaptureTypes(CaptureType.REQUEST_CONTENT, CaptureType.RESPONSE_CONTENT);
-		driver.get("https://www.infosys.com");
+		driver.get((String)readProperties.getPropValues().get("url"));
 		
 		
 	}
 	
 	public static void seleniumAction(String xpath) throws CloneNotSupportedException{
 		driver.findElement(By.id(xpath)).click();
+		driver.findElement(By.name("k")).sendKeys("performance");
+		driver.findElement(By.name("k")).sendKeys(Keys.RETURN);
 	}
 	
 	public void storeHarContent(String path) throws IOException{
@@ -84,15 +104,25 @@ public class Test {
 		proxy1.abort();
 		closeDriver();
 	}
+	
+	public static void clearHistory() throws InterruptedException {
+		driver.manage().deleteAllCookies();
+		//Code below to physically open the browser and clean it
+		/*driver.get("chrome://settings/clearBrowserData") ;
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//settings-ui")).sendKeys(Keys.ENTER);*/
+		
+	}
 
 	public static void main(String[] args) throws InterruptedException {
-
+readDriver();
 		Test t = new Test();
 		try {				
 			t.creteProxy();
 			Thread.sleep(3000);
 			t.storeHarContent("D:/infosys1.har");
 			Thread.sleep(3000);
+			clearHistory();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +130,7 @@ public class Test {
 		
 		try {				
 			//creteProxy();
-			seleniumAction("btn-search");
+			seleniumAction((String)readProperties.getPropValues().get("action1"));
 			Thread.sleep(3000);
 			t.storeHarContent("D:/infosys2.har");
 			Thread.sleep(3000);
